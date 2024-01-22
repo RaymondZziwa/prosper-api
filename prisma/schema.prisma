@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Talent {
+  talentId  Int @id @default(autoincrement())
+  firstName String
+  lastName  String
+  nationality String
+  dob DateTime
+
+  email String
+  tel1 String
+  tel2 String?
+
+  nok_firstName String
+  nok_lastName String
+  nok_relationship String
+  nok_tel1 String
+  nok_tel2 String?
+  nok_email String?
+  profileImage String?
+
+  primaryPosition String
+  secondaryPosition String?
+  educationLevel String?
+  category String?
+  password String
+
+  isVerified Boolean @default(false)
+
+  preferredFoot String?
+
+  registeredAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Scout {
+  scoutId Int @id @default(autoincrement())
+  firstName String
+  lastName String
+  email String
+  tel1 String
+  tel2 String?
+  nationality String
+  profileImage String?
+  isVerified Boolean @default(false)
+  registeredAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
