@@ -17,7 +17,7 @@ model Talent {
   nationality String
   dob DateTime
 
-  email String
+  email String @unique
   tel1 String
   tel2 String?
 
@@ -41,6 +41,8 @@ model Talent {
 
   registeredAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("Talents")
 }
 
 model Scout {
@@ -55,4 +57,6 @@ model Scout {
   isVerified Boolean @default(false)
   registeredAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+    @@map("Scouts")
 }
