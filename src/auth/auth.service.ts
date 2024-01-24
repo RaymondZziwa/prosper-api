@@ -5,6 +5,7 @@ import { SignInDto, SignUpDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
+import { env } from 'process';
 
 @Injectable({})
 export class AuthService {
@@ -38,13 +39,14 @@ export class AuthService {
           preferredFoot: dto.preferredFoot,
         },
       });
+
       //logic to return the new user
-      return "Registration successful. Please log in to access your dashboard.";
+      return this.signToken(talent.talentId, talent.email);
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           throw new ForbiddenException(
-            'The email you are trying to use is already associated to an account.Please use a different email.',
+            'The email or phone number you are trying to use is already associated to an account.Please use a different email.',
           );
         }
       }
@@ -71,6 +73,28 @@ export class AuthService {
       throw new ForbiddenException('Incorrect password.');
     }
     //log in the user if all details match
-    return user;
+    return this.signToken(user.talentId, user.email);
+  }
+
+  async signToken(
+    userId: number,
+    email: string
+  ): Promise<{access_token: string}> {
+
+    const signaturePayload = {
+      sub: userId,
+      email
+    }
+
+    const token = await this.jwt.signAsync(signaturePayload, {
+      expiresIn: '2h',
+      secret: env.JWT_SECRET
+    })
+
+    return (
+      {
+        access_token: token
+      }
+    )
   }
 }
