@@ -7,6 +7,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
 import { env } from 'process';
 
+
 @Injectable({})
 export class AuthService {
   constructor(private prisma: PrismaService, private jwt: JwtService) {}
@@ -75,7 +76,8 @@ export class AuthService {
     //log in the user if all details match
     return this.signToken(user.talentId, user.email);
   }
-
+  
+  //function to sign data into the encrypted access token
   async signToken(
     userId: number,
     email: string
@@ -87,7 +89,7 @@ export class AuthService {
     }
 
     const token = await this.jwt.signAsync(signaturePayload, {
-      expiresIn: '2h',
+      expiresIn: '5h',
       secret: env.JWT_SECRET
     })
 
