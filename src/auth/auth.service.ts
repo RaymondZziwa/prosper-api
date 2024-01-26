@@ -76,7 +76,7 @@ export class AuthService {
     //log in the user if all details match
     return this.signToken(user.talentId, user.email);
   }
-  
+
   //function to sign data into the encrypted access token
   async signToken(
     userId: number,
