@@ -49,8 +49,8 @@ model Scout {
   scoutId Int @id @default(autoincrement())
   firstName String
   lastName String
-  email String
-  tel1 String
+  email String @unique
+  tel1 String  @unique
   tel2 String?
   nationality String
   profileImage String?
@@ -58,5 +58,5 @@ model Scout {
   registeredAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-    @@map("Scouts")
+  @@map("Scouts")
 }

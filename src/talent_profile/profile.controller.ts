@@ -3,7 +3,7 @@ import { Request } from 'express';
 import { JWTGuard } from 'src/auth/strategy/guards';
 
 @Controller('talent')
-export class ProfileController {
+export class TalentProfileController {
   @UseGuards(JWTGuard)
   @Get('talent-profile')
   getUserProfile(@Req() req: Request) {
