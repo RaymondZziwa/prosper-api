@@ -25,7 +25,7 @@ export class SendEmailService {
 
   async sendWelcomeEmail(to: string, firstName: string, lastName: string) {
     const mailOptions = {
-      from: env.SMTP_USER,
+      from: 'noreply@prosperfootballagency.com',
       to,
       subject: 'WELCOME TO PROSPER FOOTBALL AGENCY.',
       text: `
