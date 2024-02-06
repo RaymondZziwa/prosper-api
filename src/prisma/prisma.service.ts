@@ -4,6 +4,7 @@ import { env } from 'process';
 
 @Injectable()
 export class PrismaService extends PrismaClient {
+  Issues: any;
   constructor() {
     super({
       datasources: {
