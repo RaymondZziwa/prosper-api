@@ -6,11 +6,13 @@ import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
 import { env } from 'process';
+import { SendEmailService } from 'src/mailing_service/email.service';
 
 
 @Injectable({})
 export class AuthService {
-  constructor(private prisma: PrismaService, private jwt: JwtService) {}
+  constructor(private prisma: PrismaService, private jwt: JwtService, private sendEmail: SendEmailService) {}
+  //talent sign up 
   async talentsignup(dto: SignUpDto) {
     //logic to hash the incoming password
     const hashedPassword = await argon.hash(dto.password);
@@ -41,7 +43,12 @@ export class AuthService {
         },
       });
 
-      //logic to return the new user
+      //logic to send welcome email and return the new user
+      try {
+        await this.sendEmail.sendWelcomeEmail(dto.email, dto.firstName, dto.lastName);
+      } catch (error) {
+        console.log(error)
+      }
       return this.signToken(talent.talentId, talent.email);
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
@@ -55,17 +62,18 @@ export class AuthService {
       throw error;
     }
   }
-
+  //talent log in
   async talentlogin(dto: SignInDto) {
     //find user by email
     const user = await this.prisma.talent.findUnique({
       where: { 
         email: dto.email,
+        accountActive: true
       },
     });
     //throw exception if user doesnot exist
     if (!user) {
-      throw new ForbiddenException('User account not found.');
+      throw new ForbiddenException('User account was not found.');
     }
     //compare passwords
     const comparePasswords = await argon.verify(user.password, dto.password);
