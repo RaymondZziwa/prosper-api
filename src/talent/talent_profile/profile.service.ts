@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'prisma/prisma.service';
 import { GetTalentProfileDto, IssueSupport, ResetPasswordDto } from './dto';
 import { PrismaClientValidationError } from '@prisma/client/runtime/library';
 import * as argon from 'argon2';
@@ -95,7 +95,7 @@ export class ProfileService {
   //send a user issue/inquiry to support
   async createIssue(dto: IssueSupport) {
     try {
-      const issue = await this.prisma.Issues.create({
+      const issue = await this.prisma.issues.create({
         data: {
           category: dto.category,
           title: dto.issueTitle,
@@ -107,7 +107,7 @@ export class ProfileService {
       return {
         HttpStatus: 200,
         message: 'Successfully sent your issue to our support team.',
-        title: issue.issueTitle,
+        title: issue.title,
       };
     } catch (error) {
       if (error instanceof PrismaClientValidationError) {

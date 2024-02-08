@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
-import { JWTGuard } from 'src/auth/strategy/guards';
+import { JWTGuard } from 'auth/strategy/guards';
 import { ProfileService } from './profile.service';
 import { GetTalentProfileDto, IssueSupport, ResetPasswordDto } from './dto';
 

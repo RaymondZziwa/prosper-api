@@ -38,6 +38,7 @@ model Talent {
   isVerified Boolean @default(false)
 
   preferredFoot String?
+  currentPlayerStatus String?
 
   registeredAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -75,4 +76,22 @@ model Issues {
   isSolved Boolean @default(false)
   reportedAt DateTime @default(now())
   solvedAt DateTime? 
+}
+
+model talentMedia {
+  talentId Int @id @default(autoincrement())
+  mediaUrl String
+}
+
+model talentReport {
+  reportId  Int @id @default(autoincrement())
+  description String
+}
+
+model events {
+  eventId Int @id @default(autoincrement())
+  eventTitle String
+  description String
+  eventDate DateTime
+  location String
 }

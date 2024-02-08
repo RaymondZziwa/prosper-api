@@ -4,7 +4,6 @@ import { env } from 'process';
 
 @Injectable()
 export class PrismaService extends PrismaClient {
-  Issues: any;
   constructor() {
     super({
       datasources: {
@@ -13,5 +12,16 @@ export class PrismaService extends PrismaClient {
         },
       },
     });
+  }
+
+  cleanDatabase() {
+    return this.$transaction([
+      this.issues.deleteMany(),
+      this.talentMedia.deleteMany(),
+      this.events.deleteMany(),
+      this.talentReport.deleteMany(),
+      this.talent.deleteMany(),
+      this.scout.deleteMany(),
+    ]);
   }
 }
