@@ -1,18 +1,20 @@
-/* eslint-disable prettier/prettier */
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'prisma/prisma.service';
 import { SignInDto, SignUpDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
 import { env } from 'process';
-import { SendEmailService } from 'src/mailing_service/email.service';
-
+import { SendEmailService } from 'mailing_service/email.service';
 
 @Injectable({})
 export class AuthService {
-  constructor(private prisma: PrismaService, private jwt: JwtService, private sendEmail: SendEmailService) {}
-  //talent sign up 
+  constructor(
+    private prisma: PrismaService,
+    private jwt: JwtService,
+    private sendEmail: SendEmailService,
+  ) {}
+  //talent sign up
   async talentsignup(dto: SignUpDto) {
     //logic to hash the incoming password
     const hashedPassword = await argon.hash(dto.password);
@@ -45,9 +47,13 @@ export class AuthService {
 
       //logic to send welcome email and return the new user
       try {
-        await this.sendEmail.sendWelcomeEmail(dto.email, dto.firstName, dto.lastName);
+        await this.sendEmail.sendWelcomeEmail(
+          dto.email,
+          dto.firstName,
+          dto.lastName,
+        );
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
       return this.signToken(talent.talentId, talent.email);
     } catch (error) {
@@ -66,9 +72,9 @@ export class AuthService {
   async talentlogin(dto: SignInDto) {
     //find user by email
     const user = await this.prisma.talent.findUnique({
-      where: { 
+      where: {
         email: dto.email,
-        accountActive: true
+        accountActive: true,
       },
     });
     //throw exception if user doesnot exist
@@ -88,23 +94,20 @@ export class AuthService {
   //function to sign data into the encrypted access token
   async signToken(
     userId: number,
-    email: string
-  ): Promise<{access_token: string}> {
-
+    email: string,
+  ): Promise<{ access_token: string }> {
     const signaturePayload = {
       sub: userId,
-      email
-    }
+      email,
+    };
 
     const token = await this.jwt.signAsync(signaturePayload, {
       expiresIn: '5h',
-      secret: env.JWT_SECRET
-    })
+      secret: env.JWT_SECRET,
+    });
 
-    return (
-      {
-        access_token: token
-      }
-    )
+    return {
+      access_token: token,
+    };
   }
 }
