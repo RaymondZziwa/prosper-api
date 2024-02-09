@@ -1,13 +1,13 @@
 import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { JWTGuard } from 'auth/strategy/guards';
 import { ProfileService } from './profile.service';
-import { GetTalentProfileDto, IssueSupport, ResetPasswordDto } from './dto';
+import { GetTalentProfileDto, IssueSupportDto, ResetPasswordDto } from './dto';
 
 @UseGuards(JWTGuard)
 @Controller('talent')
 export class TalentProfileController {
   constructor(private profileService: ProfileService) {}
-  @Get('talent-profile')
+  @Get('profile')
   getTalentProfile(@Body() dto: GetTalentProfileDto) {
     return this.profileService.getTalentProfile(dto);
   }
@@ -24,7 +24,7 @@ export class TalentProfileController {
 
   @Post('update-password')
   updatePassword(@Body() dto: ResetPasswordDto) {
-    return this.profileService.resetTalentAccountPassword(dto);
+    return this.profileService.updateTalentAccountPassword(dto);
   }
 
   @Post('deactivate-account')
@@ -33,7 +33,7 @@ export class TalentProfileController {
   }
 
   @Post('talent-support')
-  supportTalent(@Body() dto: IssueSupport) {
+  supportTalent(@Body() dto: IssueSupportDto) {
     return this.profileService.createIssue(dto);
   }
 

@@ -4,6 +4,7 @@ import * as nodemailer from 'nodemailer';
 import { env } from 'process';
 import {
   emailVerificationTemplate,
+  passwordResetEmailTemplate,
   welcomeEmailTemplate,
 } from './email_templates';
 
@@ -57,6 +58,27 @@ export class SendEmailService {
       from: env.SMTP_USER,
       to,
       subject: 'VERIFY YOUR EMAIL.',
+      text: emailTemplate,
+    };
+
+    return await this.transporter.sendMail(mailOptions);
+  }
+
+  async sendPasswordResetEmail(
+    to: string,
+    firstName: string,
+    lastName: string,
+    encryptionKey: string,
+  ) {
+    const emailTemplate: string = await passwordResetEmailTemplate(
+      firstName,
+      lastName,
+      encryptionKey,
+    );
+    const mailOptions = {
+      from: env.SMTP_USER,
+      to,
+      subject: 'TALENT ACCOUNT PASSWORD RESET.',
       text: emailTemplate,
     };
 

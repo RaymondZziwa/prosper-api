@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
-import { GetTalentProfileDto, IssueSupport, ResetPasswordDto } from './dto';
+import { GetTalentProfileDto, IssueSupportDto, ResetPasswordDto } from './dto';
 import { PrismaClientValidationError } from '@prisma/client/runtime/library';
 import * as argon from 'argon2';
 
@@ -8,7 +8,7 @@ import * as argon from 'argon2';
 export class ProfileService {
   constructor(private prisma: PrismaService) {}
   //reset talent account password
-  async resetTalentAccountPassword(dto: ResetPasswordDto) {
+  async updateTalentAccountPassword(dto: ResetPasswordDto) {
     //find user talent by talentId
     const user = await this.prisma.talent.findUnique({
       where: {
@@ -39,7 +39,7 @@ export class ProfileService {
 
         return {
           HttpStatus: 200,
-          message: 'Your password has been successfully reset.',
+          message: 'Your password has been successfully updated.',
         };
       } catch (error) {
         return {
@@ -93,7 +93,7 @@ export class ProfileService {
     }
   }
   //send a user issue/inquiry to support
-  async createIssue(dto: IssueSupport) {
+  async createIssue(dto: IssueSupportDto) {
     try {
       const issue = await this.prisma.issues.create({
         data: {
@@ -105,7 +105,7 @@ export class ProfileService {
       });
 
       return {
-        HttpStatus: 200,
+        HttpStatus: 201,
         message: 'Successfully sent your issue to our support team.',
         title: issue.title,
       };

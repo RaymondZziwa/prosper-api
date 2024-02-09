@@ -1,11 +1,25 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
-import { SignInDto, SignUpDto } from './dto';
+import {
+  SignInDto,
+  SignUpDto,
+  requestPasswordResetEncryptionKeyDto,
+  resetTalentAccountPasswordDto,
+} from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
 import { env } from 'process';
 import { SendEmailService } from 'mailing_service/email.service';
+import {
+  generatePasswordResetEncryptionKey,
+  getGeneratedEncryptionKey,
+  isEncryptionKeyExpired,
+} from 'encryption_key_generation';
 
 @Injectable({})
 export class AuthService {
@@ -109,5 +123,70 @@ export class AuthService {
     return {
       access_token: token,
     };
+  }
+
+  //reset password incase of a forgotten password
+  async talentVerifyUser(dto: requestPasswordResetEncryptionKeyDto) {
+    try {
+      const user = await this.prisma.talent.findUnique({
+        where: { email: dto.email },
+      });
+
+      if (!user) {
+        throw new NotFoundException('User Account not found');
+      }
+      generatePasswordResetEncryptionKey();
+      const { key } = getGeneratedEncryptionKey();
+      await this.sendEmail.sendPasswordResetEmail(
+        dto.email,
+        user.firstName,
+        user.lastName,
+        key,
+      );
+    } catch (error) {
+      throw new ForbiddenException(
+        'Error while sending email verification key.',
+      );
+    }
+  }
+
+  //validate the reset key and update the users password
+  async resetTalentAccountPassword(dto: resetTalentAccountPasswordDto) {
+    try {
+      const enteredEncryptionKey = dto.encryptionKey;
+      const { key, timeStamp } = getGeneratedEncryptionKey();
+
+      if (enteredEncryptionKey !== key || isEncryptionKeyExpired(timeStamp)) {
+        throw new ForbiddenException('Invalid Encryption Key');
+      }
+
+      const user = await this.prisma.talent.findUnique({
+        where: {
+          email: dto.email,
+        },
+      });
+
+      if (!user) {
+        throw new NotFoundException('User Account not found');
+      }
+
+      try {
+        const hashedNewPassword = await argon.hash(dto.newPassword);
+        await this.prisma.talent.update({
+          where: { email: user.email },
+          data: { password: hashedNewPassword },
+        });
+        return {
+          HttpStatus: 200,
+          message: 'Your password has been successfully reset.',
+        };
+      } catch (error) {
+        throw new ForbiddenException(
+          'Error while resetting your account password. Please try again later.',
+        );
+      }
+    } catch (error) {
+      throw new ForbiddenException('Error while validating encryption key.');
+    }
   }
 }
