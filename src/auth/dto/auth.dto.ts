@@ -106,3 +106,29 @@ export class SignInDto {
   })
   password: string;
 }
+
+export class requestPasswordResetEncryptionKeyDto {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+}
+
+export class resetTalentAccountPasswordDto {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  encryptionKey: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  @MaxLength(20, { message: 'Password cannot be longer than 20 characters' })
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/, {
+    message:
+      'New password must contain at least one lowercase letter, one uppercase letter, and one number',
+  })
+  newPassword: string;
+}

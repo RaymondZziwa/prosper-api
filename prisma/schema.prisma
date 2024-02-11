@@ -85,13 +85,35 @@ model talentMedia {
 
 model talentReport {
   reportId  Int @id @default(autoincrement())
+  talentId Int
   description String
 }
 
 model events {
   eventId Int @id @default(autoincrement())
+  thumbnail String
   eventTitle String
   description String
   eventDate DateTime
   location String
+}
+
+model articles {
+  articleId Int @id @default(autoincrement())
+  thumbnail String
+  title String
+  content String
+}
+
+model successStories {
+  storyId Int @id @default(autoincrement())
+  talentId Int
+  thumbnail String
+  content String
+}
+
+model partners {
+  partnerId  Int @id @default(autoincrement())
+  thumbnail String
+  name String
 }

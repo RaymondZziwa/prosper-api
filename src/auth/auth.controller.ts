@@ -1,6 +1,11 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SignInDto, SignUpDto } from './dto';
+import {
+  SignInDto,
+  SignUpDto,
+  requestPasswordResetEncryptionKeyDto,
+  resetTalentAccountPasswordDto,
+} from './dto';
 
 @Controller('auth')
 export class AuthController {
@@ -14,5 +19,15 @@ export class AuthController {
   @Post('talentlogin')
   talentlogin(@Body() dto: SignInDto) {
     return this.authService.talentlogin(dto);
+  }
+
+  @Post('talent-verify-user')
+  talentVerifyUser(@Body() dto: requestPasswordResetEncryptionKeyDto) {
+    return this.authService.talentVerifyUser(dto);
+  }
+
+  @Post('talent-reset-password')
+  resetTalentAccountPassword(@Body() dto: resetTalentAccountPasswordDto) {
+    return this.authService.resetTalentAccountPassword(dto);
   }
 }

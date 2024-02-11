@@ -1,8 +1,8 @@
 {
   "name": "prosper-api",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Backend Rest API for prosper web app",
+  "author": "Zziwa Raymond Ian",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -26,7 +26,11 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "pretest:e2e": "npm run db:test:restart",
-    "test:e2e": "dotenv -e .env.test -- jest --watch --no-cache --config ./test/jest-e2e.json"
+    "test:e2e": "dotenv -e .env.test -- jest --watch --no-cache --forceExit --detectOpenHandles --maxWorkers=1 --config  ./test/jest-e2e.json",
+    "prisma:prod:deploy": "dotenv -e .env.prod -- prisma migrate deploy",
+    "db:prod:rm": "docker compose rm prosper-prod-db -s -f -v",
+    "db:prod:up": "docker compose up prosper-prod-db -d",
+    "db:prod:restart": "npm run db:prod:rm && npm run db:prod:up && sleep 1 && npm run prisma:prod:deploy"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -40,6 +44,7 @@
     "argon2": "^0.31.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "crypto": "^1.0.1",
     "dotenv-cli": "^7.3.0",
     "module-alias": "^2.2.3",
     "nodemailer": "^6.9.9",
