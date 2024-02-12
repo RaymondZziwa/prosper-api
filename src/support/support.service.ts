@@ -11,16 +11,24 @@ import {
   saveNewSuccessStoryDto,
 } from './dto/support.dto';
 import { PrismaClientValidationError } from '@prisma/client/runtime/library';
+import { FileService } from 'config/multer.service';
 
 @Injectable({})
 export class SupportService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private fileService: FileService,
+  ) {}
   //partner creation function
   async savePartners(dto: saveNewPartnerDto) {
     try {
+      const savedImagePath = await this.fileService.saveFile(
+        dto.thumbnail,
+        'partners_thumbnails',
+      );
       await this.prisma.partners.create({
         data: {
-          thumbnail: dto.thumbnail,
+          thumbnail: savedImagePath,
           name: dto.name,
         },
       });
@@ -70,9 +78,13 @@ export class SupportService {
   //event creation function
   async saveNewEvent(dto: saveNewEventDto) {
     try {
+      const savedImagePath = await this.fileService.saveFile(
+        dto.thumbnail,
+        'events_thumbnails',
+      );
       await this.prisma.events.create({
         data: {
-          thumbnail: dto.thumbnail,
+          thumbnail: savedImagePath,
           eventTitle: dto.eventTitle,
           description: dto.description,
           eventDate: dto.eventDate,
@@ -107,9 +119,14 @@ export class SupportService {
       });
       if (event) {
         try {
+          const savedImagePath = await this.fileService.saveFile(
+            dto.thumbnail,
+            'events_thumbnails',
+          );
           await this.prisma.events.update({
             where: { eventId: parseInt(dto.eventId) },
             data: {
+              thumbnail: savedImagePath,
               eventTitle: dto.eventTitle,
               description: dto.description,
               eventDate: dto.eventDate,
@@ -162,9 +179,13 @@ export class SupportService {
   //article creation function
   async saveNewArticle(dto: saveNewArticleDto) {
     try {
+      const savedImagePath = await this.fileService.saveFile(
+        dto.thumbnail,
+        'articles_thumbnails',
+      );
       await this.prisma.articles.create({
         data: {
-          thumbnail: dto.thumbnail,
+          thumbnail: savedImagePath,
           title: dto.title,
           content: dto.content,
         },
@@ -190,6 +211,10 @@ export class SupportService {
   //article editing function
   async editArticle(dto: manageArticlesDto) {
     try {
+      const savedImagePath = await this.fileService.saveFile(
+        dto.thumbnail,
+        'articles_thumbnails',
+      );
       const article = await this.prisma.articles.findUnique({
         where: {
           articleId: parseInt(dto.articleId),
@@ -200,7 +225,7 @@ export class SupportService {
           await this.prisma.articles.update({
             where: { articleId: parseInt(dto.articleId) },
             data: {
-              thumbnail: dto.thumbnail,
+              thumbnail: savedImagePath,
               title: dto.title,
               content: dto.content,
             },
@@ -252,10 +277,14 @@ export class SupportService {
   //success story creation function
   async saveNewSuccessStory(dto: saveNewSuccessStoryDto) {
     try {
+      const savedImagePath = await this.fileService.saveFile(
+        dto.thumbnail,
+        'success_stories_thumbnails',
+      );
       await this.prisma.successStories.create({
         data: {
           talentId: dto.talentId,
-          thumbnail: dto.thumbnail,
+          thumbnail: savedImagePath,
           title: dto.title,
           content: dto.content,
         },
@@ -282,6 +311,10 @@ export class SupportService {
   //success story editing function
   async editSuccessStory(dto: manageSuccessStoryDto) {
     try {
+      const savedImagePath = await this.fileService.saveFile(
+        dto.thumbnail,
+        'success_stories_thumbnails',
+      );
       const story = await this.prisma.successStories.findUnique({
         where: {
           storyId: parseInt(dto.storyId),
@@ -292,7 +325,7 @@ export class SupportService {
           await this.prisma.successStories.update({
             where: { storyId: parseInt(dto.storyId) },
             data: {
-              thumbnail: dto.thumbnail,
+              thumbnail: savedImagePath,
               title: dto.title,
               content: dto.content,
             },

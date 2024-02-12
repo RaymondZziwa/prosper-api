@@ -3,7 +3,7 @@ import { IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 export class saveNewPartnerDto {
   @IsNotEmpty()
   @IsString()
-  thumbnail: string;
+  thumbnail: Express.Multer.File;
 
   @IsNotEmpty()
   @IsString()
@@ -16,7 +16,7 @@ export class saveNewPartnerDto {
 export class saveNewEventDto {
   @IsNotEmpty()
   @IsString()
-  thumbnail: string;
+  thumbnail: Express.Multer.File;
 
   @IsNotEmpty()
   @IsString()
@@ -41,7 +41,7 @@ export class saveNewEventDto {
 export class saveNewArticleDto {
   @IsNotEmpty()
   @IsString()
-  thumbnail: string;
+  thumbnail: Express.Multer.File;
 
   @IsNotEmpty()
   @IsString()
@@ -64,7 +64,7 @@ export class saveNewSuccessStoryDto {
 
   @IsNotEmpty()
   @IsString()
-  thumbnail: string;
+  thumbnail: Express.Multer.File;
 
   @IsNotEmpty()
   @IsString()
@@ -85,8 +85,9 @@ export class managePartnersDto {
   @IsString()
   partnerId: string;
 
+  @IsNotEmpty()
   @IsString()
-  thumbnail: string;
+  thumbnail: Express.Multer.File;
 
   @IsString()
   name: string;
@@ -97,8 +98,9 @@ export class manageArticlesDto {
   @IsString()
   articleId: string;
 
+  @IsNotEmpty()
   @IsString()
-  thumbnail: string;
+  thumbnail: Express.Multer.File;
 
   @IsString()
   title: string;
@@ -108,6 +110,10 @@ export class manageArticlesDto {
 }
 
 export class manageEventsDto {
+  @IsNotEmpty()
+  @IsString()
+  thumbnail: Express.Multer.File;
+
   @IsNotEmpty()
   @IsString()
   eventId: string;
@@ -130,8 +136,9 @@ export class manageSuccessStoryDto {
   @IsString()
   storyId: string;
 
+  @IsNotEmpty()
   @IsString()
-  thumbnail: string;
+  thumbnail: Express.Multer.File;
 
   @IsString()
   title: string;
