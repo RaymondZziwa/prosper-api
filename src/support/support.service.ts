@@ -15,7 +15,7 @@ import { PrismaClientValidationError } from '@prisma/client/runtime/library';
 @Injectable({})
 export class SupportService {
   constructor(private prisma: PrismaService) {}
-
+  //partner creation function
   async savePartners(dto: saveNewPartnerDto) {
     try {
       await this.prisma.partners.create({
@@ -31,16 +31,18 @@ export class SupportService {
       };
     } catch (error) {
       if (error instanceof PrismaClientValidationError) {
-        throw new ForbiddenException('Error while updating our partners list');
+        throw new ForbiddenException(
+          `Error while adding ${dto.name} to our partners list.`,
+        );
       }
       return {
         HttpStatus: 400,
-        message:
-          'There was an error while saving the new partner. Please try again later.',
+        message: `There was an error while saving ${dto.name}. Please try again later.`,
       };
     }
   }
 
+  //partner deletion function
   async deletePartners(dto: managePartnersDto) {
     try {
       await this.prisma.partners.delete({
@@ -49,7 +51,7 @@ export class SupportService {
 
       return {
         HttpStatus: 201,
-        message: 'Successfully deleted partner.',
+        message: 'Successfully deleted the selected partner.',
       };
     } catch (error) {
       if (error instanceof PrismaClientValidationError) {
@@ -58,13 +60,14 @@ export class SupportService {
         );
       }
       return {
-        HttpStatus: 400,
+        HttpStatus: 404,
         message:
-          'There was an error while deleting the selected partner. Please try again later.',
+          'Partner you are trying to delete was not found. Please try again later.',
       };
     }
   }
 
+  //event creation function
   async saveNewEvent(dto: saveNewEventDto) {
     try {
       await this.prisma.events.create({
@@ -83,16 +86,56 @@ export class SupportService {
       };
     } catch (error) {
       if (error instanceof PrismaClientValidationError) {
-        throw new ForbiddenException('Error while updating our events list.');
+        throw new ForbiddenException(
+          `Error while adding ${dto.eventTitle} to our events list.`,
+        );
       }
       return {
         HttpStatus: 400,
-        message:
-          'There was an error while saving the new event. Please try again later.',
+        message: `There was an error while saving the new event titled ${dto.eventTitle}. Please try again later.`,
       };
     }
   }
-  async editEvent(dto: manageEventsDto) {}
+
+  //event editing function
+  async editEvent(dto: manageEventsDto) {
+    try {
+      const event = await this.prisma.events.findUnique({
+        where: {
+          eventId: parseInt(dto.eventId),
+        },
+      });
+      if (event) {
+        try {
+          await this.prisma.events.update({
+            where: { eventId: parseInt(dto.eventId) },
+            data: {
+              eventTitle: dto.eventTitle,
+              description: dto.description,
+              eventDate: dto.eventDate,
+              location: dto.location,
+            },
+          });
+          return {
+            HttpStatus: 200,
+            message: `Successfully updated the event titled ${dto.eventTitle}.`,
+          };
+        } catch (error) {
+          if (error instanceof PrismaClientValidationError) {
+            throw new ForbiddenException(
+              `Error while editing the event titled ${dto.eventTitle}.`,
+            );
+          }
+        }
+      }
+    } catch (error) {
+      return {
+        HttpStatus: 404,
+        message: `The event you are trying to edit was not found. Please try again later.`,
+      };
+    }
+  }
+  //event deletion function
   async deleteEvent(dto: manageEventsDto) {
     try {
       await this.prisma.events.delete({
@@ -112,11 +155,11 @@ export class SupportService {
       return {
         HttpStatus: 400,
         message:
-          'There was an error while deleting the selected event. Please try again later.',
+          'There event you are trying to delete was not found. Please try again later.',
       };
     }
   }
-
+  //article creation function
   async saveNewArticle(dto: saveNewArticleDto) {
     try {
       await this.prisma.articles.create({
@@ -129,20 +172,59 @@ export class SupportService {
 
       return {
         HttpStatus: 201,
-        message: `Article successfully saved.`,
+        message: `Successfully added article titled ${dto.title} to our articles list.`,
       };
     } catch (error) {
       if (error instanceof PrismaClientValidationError) {
-        throw new ForbiddenException('Error while saving article.');
+        throw new ForbiddenException(
+          `Error while saving article titled ${dto.title}.`,
+        );
       }
       return {
         HttpStatus: 400,
-        message:
-          'There was an error while saving the new article. Please try again later.',
+        message: `There was an error while saving the new article titled ${dto.title}. Please try again later.`,
       };
     }
   }
-  async editArticle(dto: manageArticlesDto) {}
+
+  //article editing function
+  async editArticle(dto: manageArticlesDto) {
+    try {
+      const article = await this.prisma.articles.findUnique({
+        where: {
+          articleId: parseInt(dto.articleId),
+        },
+      });
+      if (article) {
+        try {
+          await this.prisma.articles.update({
+            where: { articleId: parseInt(dto.articleId) },
+            data: {
+              thumbnail: dto.thumbnail,
+              title: dto.title,
+              content: dto.content,
+            },
+          });
+          return {
+            HttpStatus: 200,
+            message: `Successfully updated the article titled ${dto.title}.`,
+          };
+        } catch (error) {
+          if (error instanceof PrismaClientValidationError) {
+            throw new ForbiddenException(
+              `Error while editing the article titled ${dto.title}.`,
+            );
+          }
+        }
+      }
+    } catch (error) {
+      return {
+        HttpStatus: 404,
+        message: `The article you are trying to edit was not found. Please try again later.`,
+      };
+    }
+  }
+
   async deleteArticle(dto: manageArticlesDto) {
     try {
       await this.prisma.articles.delete({
@@ -160,17 +242,19 @@ export class SupportService {
         );
       }
       return {
-        HttpStatus: 400,
+        HttpStatus: 404,
         message:
-          'There was an error while deleting the selected article. Please try again later.',
+          'There article you are trying to delete was not. Please try again later.',
       };
     }
   }
 
+  //success story creation function
   async saveNewSuccessStory(dto: saveNewSuccessStoryDto) {
     try {
       await this.prisma.successStories.create({
         data: {
+          talentId: dto.talentId,
           thumbnail: dto.thumbnail,
           title: dto.title,
           content: dto.content,
@@ -194,7 +278,46 @@ export class SupportService {
       };
     }
   }
-  async editSuccessStory(dto: manageSuccessStoryDto) {}
+
+  //success story editing function
+  async editSuccessStory(dto: manageSuccessStoryDto) {
+    try {
+      const story = await this.prisma.successStories.findUnique({
+        where: {
+          storyId: parseInt(dto.storyId),
+        },
+      });
+      if (story) {
+        try {
+          await this.prisma.successStories.update({
+            where: { storyId: parseInt(dto.storyId) },
+            data: {
+              thumbnail: dto.thumbnail,
+              title: dto.title,
+              content: dto.content,
+            },
+          });
+          return {
+            HttpStatus: 200,
+            message: `Successfully updated the success story titled ${dto.title}.`,
+          };
+        } catch (error) {
+          if (error instanceof PrismaClientValidationError) {
+            throw new ForbiddenException(
+              `Error while editing the success story titled ${dto.title}.`,
+            );
+          }
+        }
+      }
+    } catch (error) {
+      return {
+        HttpStatus: 404,
+        message: `The success story you are trying to edit was not found. Please try again later.`,
+      };
+    }
+  }
+
+  //success story deletion function
   async deleteSuccessStory(dto: manageSuccessStoryDto) {
     try {
       await this.prisma.successStories.delete({

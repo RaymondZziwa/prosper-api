@@ -1,4 +1,4 @@
-import { IsDateString, IsNotEmpty, IsString } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class saveNewPartnerDto {
   @IsNotEmpty()
@@ -58,6 +58,10 @@ export class saveNewArticleDto {
 }
 
 export class saveNewSuccessStoryDto {
+  @IsNotEmpty()
+  @IsNumber()
+  talentId: number;
+
   @IsNotEmpty()
   @IsString()
   thumbnail: string;
