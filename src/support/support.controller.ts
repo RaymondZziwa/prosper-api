@@ -1,10 +1,11 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { JWTGuard } from 'auth/strategy/guards';
+import { SupportService } from './support.service';
 
 @UseGuards(JWTGuard)
 @Controller('/support')
-export class GuestController {
-  constructor() {}
+export class SupportController {
+  constructor(private supportService: SupportService) {}
   @Get('profile')
   getSupportProfile() {
     return 'support profile';
@@ -25,13 +26,21 @@ export class GuestController {
   scoutVerification() {
     return 'verify scouts';
   }
-  @Get('manage-events')
+  @Get('get-all-events')
   getEvents() {
     return 'manage events';
   }
-  @Get('manage-issues')
+  @Get('update-event')
+  updateEvents() {
+    return 'update events';
+  }
+  @Get('get-all-issues')
   getSubmittedIssues() {
     return 'manage pro players';
+  }
+  @Get('update-issue')
+  updateIssue() {
+    return 'update issues';
   }
   @Get('manage-player-shortlists')
   getProPlayers() {
