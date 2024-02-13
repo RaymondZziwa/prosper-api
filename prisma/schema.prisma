@@ -109,7 +109,7 @@ model Issues {
   isSolved Boolean @default(false)
   reportedAt DateTime @default(now())
   solvedAt DateTime? 
-  solvedBy Int
+  solvedBy Int?
 }
 
 model talentMedia {

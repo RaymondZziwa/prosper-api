@@ -7,7 +7,7 @@ import { GetTalentProfileDto, IssueSupportDto, ResetPasswordDto } from './dto';
 @Controller('talent')
 export class TalentProfileController {
   constructor(private profileService: ProfileService) {}
-  @Get('profile')
+  @Get('talent-profile')
   getTalentProfile(@Body() dto: GetTalentProfileDto) {
     return this.profileService.getTalentProfile(dto);
   }

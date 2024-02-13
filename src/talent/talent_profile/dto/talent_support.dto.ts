@@ -16,4 +16,6 @@ export class IssueSupportDto {
   @IsString()
   @IsNotEmpty()
   description: string;
+
+  solvedBy: string;
 }

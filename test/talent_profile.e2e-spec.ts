@@ -25,7 +25,7 @@ describe('Talent profile E2E', () => {
       };
       return pactum
         .spec()
-        .get('/talent/profile')
+        .get('/talent/talent-profile')
         .withBody(dto)
         .expectStatus(401);
     });
@@ -87,6 +87,7 @@ describe('Talent profile E2E', () => {
         description: 'test description xoxoxoxo 2',
         category: 'talent',
         reporterId: '1',
+        solvedBy: '',
       };
       return pactum
         .spec()

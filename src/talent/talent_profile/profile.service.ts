@@ -105,6 +105,7 @@ export class ProfileService {
     try {
       const issue = await this.prisma.issues.create({
         data: {
+          solvedBy: parseInt(''),
           category: dto.category,
           title: dto.issueTitle,
           description: dto.description,
