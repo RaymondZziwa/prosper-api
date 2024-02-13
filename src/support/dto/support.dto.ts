@@ -1,5 +1,10 @@
 import { IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
+export class getSupportPersonnelProfileDto {
+  @IsNotEmpty()
+  @IsNumber()
+  Id: string;
+}
 export class saveNewPartnerDto {
   @IsNotEmpty()
   @IsString()
@@ -145,4 +150,32 @@ export class manageSuccessStoryDto {
 
   @IsString()
   content: string;
+}
+
+export class manageIssueSupportDto {
+  @IsNotEmpty()
+  @IsString()
+  issueId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  category: string;
+
+  @IsString()
+  @IsNotEmpty()
+  supportResponse: string;
+
+  @IsString()
+  @IsNotEmpty()
+  solvedBy: string;
+}
+
+export class manageTalentInquiries {
+  @IsString()
+  @IsNotEmpty()
+  inquiryId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  inquiryResponse: string;
 }
