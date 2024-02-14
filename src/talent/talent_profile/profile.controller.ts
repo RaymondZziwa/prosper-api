@@ -12,14 +12,28 @@ export class TalentProfileController {
     return this.profileService.getTalentProfile(dto);
   }
 
-  @Post('update-talent-profile')
-  updateUserProfile() {
+  @Post('complete-talent-profile')
+  completeTalentProfile() {
     return 'update talent profile';
   }
 
-  @Post('talent-verification')
+  @Post('update-talent-profile')
+  updateTalentProfile() {
+    return 'update talent profile';
+  }
+
+  @Post('talent-email-verification')
+  verifyTalentEmail() {
+    return 'talent email verification';
+  }
+  @Post('talent-contact-verification')
+  verifyTalentContact() {
+    return 'talent email verification';
+  }
+
+  @Post('talent-profile-verification')
   verifyUser() {
-    return 'talent verification';
+    return 'talent profile verification';
   }
 
   @Post('update-password')
@@ -35,10 +49,5 @@ export class TalentProfileController {
   @Post('talent-support')
   supportTalent(@Body() dto: IssueSupportDto) {
     return this.profileService.createIssue(dto);
-  }
-
-  @Post('past-issues-history')
-  retrievePastIssuesHistory() {
-    return 'Past issues history';
   }
 }

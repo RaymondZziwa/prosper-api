@@ -112,9 +112,16 @@ model Issues {
   solvedBy Int?
 }
 
+model scheduledMediaDays {
+  mediaDayId Int @id @default(autoincrement())
+  talentId Int
+  scheduledDate DateTime?
+}
+
 model talentMedia {
   talentId Int @id @default(autoincrement())
   mediaUrl String
+  reportedAt DateTime @default(now())
 }
 
 model talentReport {
