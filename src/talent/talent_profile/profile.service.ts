@@ -69,27 +69,35 @@ export class ProfileService {
   }
   //get talent profile
   async getTalentProfile(dto: GetTalentProfileDto) {
-    const user = await this.prisma.talent.findUnique({
-      where: { talentId: parseInt(dto.talentId) },
-    });
+    try {
+      const user = await this.prisma.talent.findUnique({
+        where: { talentId: parseInt(dto.talentId) },
+      });
 
-    if (user) {
-      return {
-        talentId: user.talentId,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        nationality: user.nationality,
-        dob: user.dob,
-        profileImage: user.profileImage,
-        primaryPosition: user.primaryPosition,
-        secondaryPosition: user.secondaryPosition,
-        isVerified: user.isVerified,
-        category: user.category,
-        preferredFoot: user.preferredFoot,
-        talentEmail: user.email,
-        phoneNumber: user.tel1,
-        educationLevel: user.educationLevel,
-      };
+      if (user) {
+        return {
+          talentId: user.talentId,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          nationality: user.nationality,
+          dob: user.dob,
+          profileImage: user.profileImage,
+          primaryPosition: user.primaryPosition,
+          secondaryPosition: user.secondaryPosition,
+          isVerified: user.isVerified,
+          category: user.category,
+          preferredFoot: user.preferredFoot,
+          talentEmail: user.email,
+          phoneNumber: user.tel1,
+          educationLevel: user.educationLevel,
+        };
+      }
+    } catch (error) {
+      if (error instanceof PrismaClientValidationError) {
+        throw new ForbiddenException(
+          'There was an error while retrieving talent profile.',
+        );
+      }
     }
   }
   //send a user issue/inquiry to support
@@ -97,6 +105,7 @@ export class ProfileService {
     try {
       const issue = await this.prisma.issues.create({
         data: {
+          solvedBy: parseInt(''),
           category: dto.category,
           title: dto.issueTitle,
           description: dto.description,

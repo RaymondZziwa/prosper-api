@@ -10,6 +10,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model supportTeam {
+  Id  Int @id @default(autoincrement())
+  firstName String
+  lastName  String
+  nationality String
+  email String @unique
+  tel1 String @unique
+  tel2 String?
+
+  profileImage String?
+
+  password String
+
+  registeredAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accountActive Boolean @default(false)
+
+}
+
 model Talent {
   talentId  Int @id @default(autoincrement())
   firstName String
@@ -36,6 +56,7 @@ model Talent {
   password String
 
   isVerified Boolean @default(false)
+  areDocumentsVerified Boolean @default(false)
 
   preferredFoot String?
   currentPlayerStatus String?
@@ -58,6 +79,7 @@ model Scout {
   nationality String
   profileImage String?
   isVerified Boolean @default(false)
+  areDocumentsVerified Boolean @default(false)
   registeredAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -66,34 +88,53 @@ model Scout {
   @@map("Scouts")
 }
 
+model TalentInquiries {
+  inquiryId Int  @id @default(autoincrement())
+  scoutId Int 
+  talentIds  Int[]
+  notes String @db.Text
+  inquiryResponse String @db.Text
+  isRespondedTo Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Issues {
   issueId Int @id @default(autoincrement())
   reporterId Int 
   category String
   title  String
-  description String
-  supportResponse String?
+  description String @db.Text
+  supportResponse String? @db.Text
   isSolved Boolean @default(false)
   reportedAt DateTime @default(now())
   solvedAt DateTime? 
+  solvedBy Int?
+}
+
+model scheduledMediaDays {
+  mediaDayId Int @id @default(autoincrement())
+  talentId Int
+  scheduledDate DateTime?
 }
 
 model talentMedia {
   talentId Int @id @default(autoincrement())
   mediaUrl String
+  reportedAt DateTime @default(now())
 }
 
 model talentReport {
   reportId  Int @id @default(autoincrement())
   talentId Int
-  description String
+  description String @db.Text
 }
 
 model events {
   eventId Int @id @default(autoincrement())
   thumbnail String
   eventTitle String
-  description String
+  description String @db.Text
   eventDate DateTime
   location String
   createdAt DateTime @default(now())
@@ -104,7 +145,7 @@ model articles {
   articleId Int @id @default(autoincrement())
   thumbnail String
   title String
-  content String
+  content String @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -114,7 +155,7 @@ model successStories {
   talentId Int
   thumbnail String
   title String
-  content String
+  content String @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
